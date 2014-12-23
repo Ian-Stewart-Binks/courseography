@@ -20,7 +20,9 @@ function Edge(source, target, id) {
  */
 Edge.prototype.updateStatus = function () {
     'use strict';
-
+    
+    var oldStatus = this.status;
+    
     if (!this.source.isSelected()) {
         this.status = 'inactive';
     } else if (!this.target.isSelected()) {
@@ -28,15 +30,32 @@ Edge.prototype.updateStatus = function () {
     } else {
         this.status = 'active';
     }
-    this.updateSVG();
+    
+    this.updateSVG(oldStatus);
 };
 
 
 /**
  * Updates the corresponding SVG path element.
  */
-Edge.prototype.updateSVG = function () {
+Edge.prototype.updateSVG = function (oldStatus) {
     'use strict';
-
-    $('#' + this.id).attr('data-active', this.status);
+    var path = document.querySelector('#' + this.id);
+    var pathSelector = $('#' + this.id);
+    var totalLength = path.getTotalLength();
+    console.log(typeof(oldStatus) + " :: PATH");
+    var newStatus = this.status;
+    
+    if ((oldStatus == 'inactive' && newStatus == 'takeable') || (oldStatus == 'takeable' && this.status == 'active')) {
+        d3.select('#' + this.id)
+            .attr("stroke-dasharray", totalLength + " " + totalLength)
+            .attr("stroke-dashoffset", totalLength)
+            .transition()
+            .duration(500)
+            .ease("linear")
+            .attr("stroke-dashoffset", 0); 
+        pathSelector.attr('data-active', newStatus);
+    } else {
+        $('#' + this.id).attr('data-active', this.status);
+    }
 };
