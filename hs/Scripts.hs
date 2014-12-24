@@ -12,6 +12,7 @@ import MasterTemplate
 plannerScripts :: H.Html
 plannerScripts = concatHtml (map makeScript["http://code.jquery.com/jquery-1.10.2.js",
                                            "http://code.jquery.com/ui/1.10.4/jquery-ui.js",
+                                           "http://d3js.org/d3.v3.min.js",
                                            "static/js/graph/modal.js",
                                            "static/js/graph/objects/edge.js",
                                            "static/js/graph/objects/node.js",
