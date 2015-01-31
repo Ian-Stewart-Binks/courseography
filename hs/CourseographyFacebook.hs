@@ -7,10 +7,13 @@ import qualified Data.Text as T
 import Happstack.Server
 import Network.HTTP.Conduit (withManager)
 import Control.Monad.Trans.Resource
+import Control.Monad
+import Control.Applicative
 import qualified Data.Conduit.List as CL
 import Data.Conduit
 import Database.Persist
 import JsonParser
+import Data.Aeson
 import GraphResponse
 import Tables
 import qualified Data.ByteString.Char8 as BS
@@ -44,7 +47,7 @@ credentials :: FB.Credentials
 credentials = FB.Credentials (T.pack courseographyUrl) appId appSecret
 
 perms :: [FB.Permission]
-perms = []
+perms = ["user_friends"]
 
 -- | Constructs the Facebook authorization URL. This method does not actually
 -- interact with Facebook.
@@ -64,9 +67,11 @@ retrieveFBData :: String -> IO Response
 retrieveFBData code = 
 	performFBAction $ do
         token <- getToken testUrl code
-        user <- FB.getUser "me" [] (Just token)
-        liftIO $ insertIdIntoDb (FB.userId user)
-        return $ toResponse (FB.userEmail user)
+        --user <- FB.getUser "me" [] (Just token)
+        user2 <- getFriends token
+        liftIO $ print user2
+        --liftIO $ insertIdIntoDb (FB.userId user)
+        return $ toResponse postFB--(FB.userEmail user)
 
 -- | Inserts a string into the database along with the current user's Facebook ID.
 insertIdIntoDb :: FB.Id -> IO ()
@@ -105,3 +110,16 @@ postToFB code token = FB.postObject "me/feed" [args "message" "Test Post Pls Ign
 -- | Gets a user's Facebook email.
 getEmail :: String -> ServerPart Response
 getEmail code = liftIO $ retrieveFBData code
+
+getFriends :: FB.UserAccessToken -> FB.FacebookT FB.Auth (ResourceT IO) Data
+getFriends token = FB.getObject "me/friends" [] (Just token)
+
+data Data =
+    Data { dataObj :: Array
+         }
+    deriving Show
+
+instance FromJSON Data where
+    parseJSON (Object v) =
+      Data <$> v .:  "data"
+    parseJSON _ = mzero
