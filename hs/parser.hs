@@ -25,9 +25,9 @@ import SVGTypes
 import ParserUtil
 
 main :: IO ()
-main = do graphFile <- readFile "../res/graphs/graph_regions.svg"
+main = do graphFile <- readFile "../res/graphs/MAT_graph_ink2.svg"
           let graphDoc = xmlParse "output.error" graphFile
-          parseLevel False (Style (0,0) "" "" "" "" "" "") (getRoot graphDoc)
+          --parseLevel False (Style (0,0) "" "" "" "" "" "") (getRoot graphDoc)
           --buildInteractive
           buildSVG
           printDB

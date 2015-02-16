@@ -27,8 +27,9 @@ svgHeader =
     " xmlns:xlink=\"http://www.w3.org/1999/xlink\"" ++
     " xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\"" ++
     " xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"" ++
-    " width=\"1052.3622\"" ++
-    " height=\"744.09448\"" ++
+    " width=\"1078\"" ++
+    " height=\"1227\"" ++
+    " stroke=\"black\"" ++
     " version=\"1.1\"" ++
     " sodipodi:docname=\"graph_regions.svg\"><defs>" ++
     "     <marker id=\"arrow\" viewBox=\"0 0 10 10\" refX=\"1\" refY=\"5\" markerUnits=\"strokeWidth\" orient=\"auto\" markerWidth=\"7\" markerHeight=\"7\">" ++
@@ -106,7 +107,7 @@ writeRegions regionXml = do
 -- | Writes the `edge` section to the output file.
 writeEdges :: String -> IO ()
 writeEdges edgeXml = do
-    appendFile "Testfile.svg" "<g style=\"stroke:#000000\">"
+    appendFile "Testfile.svg" "<g>"
     appendFile "Testfile.svg" edgeXml 
     appendFile "Testfile.svg" "</g>"
 
